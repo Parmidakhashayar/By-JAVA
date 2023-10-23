@@ -1,0 +1,89 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+class Flight {
+    private String flightNumber;
+    private int capacity;
+    private int reservedSeats;
+
+    public Flight(String flightNumber, int capacity) {
+        this.flightNumber = flightNumber;
+        this.capacity = capacity;
+        this.reservedSeats = 0;
+    }
+
+    public String getFlightNumber() {
+        return flightNumber;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public int getReservedSeats() {
+        return reservedSeats;
+    }
+
+    public boolean reserveSeats(int numSeats) {
+        if (reservedSeats + numSeats <= capacity) {
+            reservedSeats += numSeats;
+            System.out.println(numSeats + " seat(s) reserved successfully for flight " + flightNumber);
+            return true;
+        } else {
+            System.out.println("Not enough seats available for flight " + flightNumber);
+            return false;
+        }
+    }
+}
+
+class ReservationSystem {
+    private final Map<String, Flight> flights;
+
+    public ReservationSystem() {
+        flights = new HashMap<>();
+    }
+
+    public void addFlight(String flightNumber, int capacity) {
+        if (!flights.containsKey(flightNumber)) {
+            Flight flight = new Flight(flightNumber, capacity);
+            flights.put(flightNumber, flight);
+            System.out.println("Flight " + flightNumber + " added successfully.");
+        } else {
+            System.out.println("Flight " + flightNumber + " already exists.");
+        }
+    }
+
+    public boolean reserveSeat(String flightNumber, int numSeats) {
+        if (flights.containsKey(flightNumber)) {
+            return flights.get(flightNumber).reserveSeats(numSeats);
+        } else {
+            System.out.println("Flight " + flightNumber + " does not exist.");
+            return false;
+        }
+    }
+}
+
+public class FlightReservationSystem {
+    public static void main(String[] args) {
+        ReservationSystem reservationSystem = new ReservationSystem();
+        Scanner scanner = new Scanner(System.in);
+
+        reservationSystem.addFlight("ABC123", 100);
+        reservationSystem.addFlight("DEF456", 150);
+
+        while (true) {
+            System.out.println("Enter the flight number to reserve seats or 'exit' to quit:");
+            String flightNumber = scanner.nextLine();
+
+            if (flightNumber.equals("exit")) {
+                break;
+            }
+
+            System.out.println("Enter the number of seats to reserve:");
+            int numSeats = Integer.parseInt(scanner.nextLine());
+
+            reservationSystem.reserveSeat(flightNumber, numSeats);
+        }
+    }
+}
