@@ -1,24 +1,96 @@
-# Compiled class file
-*.class
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
-# Log file
-*.log
+class Account {
+    private double balance;
 
-# BlueJ files
-*.ctxt
+    public Account(double balance) {
+        this.balance = balance;
+    }
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+    public double getBalance() {
+        return balance;
+    }
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+    public void deposit(double amount) {
+        balance += amount;
+        System.out.println(amount + " deposited. Current balance: " + balance);
+    }
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+    public void withdraw(double amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            System.out.println(amount + " withdrawn. Current balance: " + balance);
+        } else {
+            System.out.println("Insufficient funds. Current balance: " + balance);
+        }
+    }
+}
+
+class Bank {
+    private final Map<Integer, Account> accounts;
+
+    public Bank() {
+        accounts = new HashMap<>();
+    }
+
+    public void createAccount(int accountNumber, double initialBalance) {
+        if (!accounts.containsKey(accountNumber)) {
+            Account account = new Account(initialBalance);
+            accounts.put(accountNumber, account);
+            System.out.println("Account created successfully. Account number: " + accountNumber);
+        } else {
+            System.out.println("Account number already exists. Please use a different number.");
+        }
+    }
+
+    public Account getAccount(int accountNumber) {
+        return accounts.get(accountNumber);
+    }
+}
+
+public class BankingSystem {
+    public static void main(String[] args) {
+        Bank bank = new Bank();
+        Scanner scanner = new Scanner(System.in);
+        int accountNumber = 12345;
+        bank.createAccount(accountNumber, 1000.00);
+
+        Account account = bank.getAccount(accountNumber);
+        if (account != null) {
+            System.out.println("Welcome to the banking system.");
+            while (true) {
+                System.out.println("Choose an option:");
+                System.out.println("1. Deposit");
+                System.out.println("2. Withdraw");
+                System.out.println("3. Check Balance");
+                System.out.println("4. Exit");
+                int option = scanner.nextInt();
+
+                switch (option) {
+                    case 1:
+                        System.out.println("Enter amount to deposit: ");
+                        double depositAmount = scanner.nextDouble();
+                        account.deposit(depositAmount);
+                        break;
+                    case 2:
+                        System.out.println("Enter amount to withdraw: ");
+                        double withdrawAmount = scanner.nextDouble();
+                        account.withdraw(withdrawAmount);
+                        break;
+                    case 3:
+                        System.out.println("Current balance is : " + account.getBalance());
+                        break;
+                    case 4:
+                        System.out.println("Thank you for using the banking system. Goodbye!");
+                        System.exit(0);
+                    default:
+                        System.out.println("Invalid option. Please try again.");
+                }
+            }
+        } else {
+            System.out.println("Account not found. Please try again.");
+        }
+    }
+}
